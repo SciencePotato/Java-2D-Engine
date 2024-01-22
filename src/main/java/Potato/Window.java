@@ -1,5 +1,6 @@
 package Potato;
 
+import Util.Time;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -12,11 +13,12 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
-    private int width, height;
-    private String title;
+    private final int width, height;
+    private final String title;
     private long glfwWindow;
     private static Window window = null;
-    private float r = 1.0f, g = 1.0f, b = 1.0f, a = 1.0f;
+    private static Scene currentScene = null;
+    public float r = 1.0f, g = 1.0f, b = 1.0f, a = 1.0f;
 
     private Window() {
         this.width = 800;
@@ -31,6 +33,18 @@ public class Window {
         return Window.window;
     }
 
+    public static void changeScene(int newScene) {
+        switch (newScene) {
+            case 0:
+                currentScene = new LevelEditorScene();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                break;
+            default:        // Test scene
+                break;
+        }
+    }
     public void run() {
         System.out.println("Initialization" + Version.getVersion());
 
@@ -78,23 +92,28 @@ public class Window {
 
         // LWJGL detects context, make OpenGL bindings
         GL.createCapabilities();
+
+        Window.changeScene(0);
     }
 
     public void loop() {
+        float startTime = Time.getTime(), endTime, deltaTime = -1.0f;
+
         while (!glfwWindowShouldClose(glfwWindow))  {
             glfwPollEvents();
 
             glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            if (KeyListener.isKeyPress(GLFW_KEY_SPACE)) {
-                r = Math.max(0.0f, r - 0.01f);
-                g = Math.max(0.0f, r - 0.01f);
-                b = Math.max(0.0f, r - 0.01f);
-                System.out.println("space pressed");
-            }
+            // Check if first scene has executed or not
+            if (deltaTime >= 0) currentScene.update(deltaTime);
 
             glfwSwapBuffers(glfwWindow);
+
+            // Time calculation | After frame ends
+            endTime = Time.getTime();
+            deltaTime = endTime - startTime;
+            startTime = Time.getTime();
         }
     }
 }

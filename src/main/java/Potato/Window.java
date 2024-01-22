@@ -4,6 +4,7 @@ import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -11,14 +12,15 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
-    private final int width, height;
-    private final String title;
+    private int width, height;
+    private String title;
     private long glfwWindow;
     private static Window window = null;
+    private float r = 1.0f, g = 1.0f, b = 1.0f, a = 1.0f;
 
     private Window() {
-        this.width = 1920;
-        this.height = 1080;
+        this.width = 800;
+        this.height = 600;
         this.title = "Temporary title";
     }
 
@@ -34,6 +36,12 @@ public class Window {
 
         init();
         loop();
+
+        // Free Memory & Erro
+        glfwFreeCallbacks(glfwWindow);
+        glfwDestroyWindow(glfwWindow);
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 
     public void init() {
@@ -48,13 +56,19 @@ public class Window {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
 
         // Create window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
         if (glfwWindow == NULL) {
             throw new IllegalStateException("Window creation Failure");
         }
+
+        // Attach Listener to GLFW
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
 
         // OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
@@ -70,8 +84,15 @@ public class Window {
         while (!glfwWindowShouldClose(glfwWindow))  {
             glfwPollEvents();
 
-            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            if (KeyListener.isKeyPress(GLFW_KEY_SPACE)) {
+                r = Math.max(0.0f, r - 0.01f);
+                g = Math.max(0.0f, r - 0.01f);
+                b = Math.max(0.0f, r - 0.01f);
+                System.out.println("space pressed");
+            }
 
             glfwSwapBuffers(glfwWindow);
         }

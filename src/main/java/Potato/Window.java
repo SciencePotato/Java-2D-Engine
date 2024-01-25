@@ -44,6 +44,8 @@ public class Window {
             default:        // Test scene
                 break;
         }
+
+        if (currentScene != null) currentScene.init();
     }
     public void run() {
         System.out.println("Initialization" + Version.getVersion());

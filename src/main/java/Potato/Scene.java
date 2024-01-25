@@ -6,5 +6,9 @@ public abstract class Scene {
 
     }
 
+    public void init() {
+        System.out.println("Scene initialization potato");
+    }
+
     public abstract void update(float dt);
 }

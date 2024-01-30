@@ -1,6 +1,6 @@
 package renderer;
 
-import org.joml.Matrix4f;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 
 import java.io.IOException;
@@ -16,6 +16,7 @@ public class Shader {
 
     private int shaderId, vertexId, fragmentId;
     private String vertexSrc, fragmentSrc, filePath;
+    private boolean beingUsed;
 
     public Shader(String filePath) {
         this.filePath = filePath;
@@ -101,17 +102,63 @@ public class Shader {
     }
 
     public void use() {
-        glUseProgram(shaderId);
+        if (!beingUsed) {
+            glUseProgram(shaderId);
+            beingUsed = true;
+        }
     }
 
     public void detach() {
         glUseProgram(0);
+        beingUsed = false;
     }
 
     public void uploadMat4(String varName, Matrix4f mat4) {
         int varLocation = glGetUniformLocation(shaderId, varName);
+        // Ensure we're using shader everytime
+        use();
         FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
         mat4.get(matBuffer);
         glUniformMatrix4fv(varLocation, false, matBuffer);
     }
+
+    public void uploadMat3(String varName, Matrix3f mat3) {
+        int varLocation = glGetUniformLocation(shaderId, varName);
+        // Ensure we're using shader everytime
+        use();
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(9);
+        mat3.get(matBuffer);
+        glUniformMatrix3fv(varLocation, false, matBuffer);
+    }
+
+    public void uploadVec4f(String varName, Vector4f vec) {
+        int varLocation = glGetUniformLocation(shaderId, varName);
+        use();
+        glUniform4f(varLocation, vec.x, vec.y, vec.z, vec.w);
+    }
+
+    public void uploadVec3f(String varName, Vector3f vec) {
+        int varLocation = glGetUniformLocation(shaderId, varName);
+        use();
+        glUniform3f(varLocation, vec.x, vec.y, vec.z);
+    }
+
+    public void uploadVec3f(String varName, Vector2f vec) {
+        int varLocation = glGetUniformLocation(shaderId, varName);
+        use();
+        glUniform2f(varLocation, vec.x, vec.y);
+    }
+
+    public void uploadFloat(String varName, float val) {
+        int varLocation = glGetUniformLocation(shaderId, varName);
+        use();
+        glUniform1f(varLocation, val);
+    }
+
+    public void uploadInt(String varName, int val) {
+        int varLocation = glGetUniformLocation(shaderId, varName);
+        use();
+        glUniform1i(varLocation, val);
+    }
+
 }

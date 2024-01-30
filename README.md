@@ -4,6 +4,9 @@
 
 ## Resource and Credits
 
+## TODO
+Further Abstraction to include more type of Shader; not limited to Fragment and Vertex.
+
 ## Notes
 ### Time Calculation
 nanotimes = 1 * 10^9ns / 1s; \
@@ -44,3 +47,11 @@ draw the elements. After all is done, you'll have to deconstruct everything whic
 Either you can have one file determining Shaders. Or like what LearnOpenGL.com
 states you can just have multiple files for specific Shaders. In this case, we're abstracting it via 
 Regex, separating and figuring the starting and the End of the specific Shader program.
+
+### Camera
+Perspective versus orthographic camera. (3D projection versus 2D view). \
+With Camera we have a Far and Near clipping, just not render when we're not wanting to see it.
+![img.png](assets/imageREADME/cameraType.png)
+
+### Shader
+

@@ -5,6 +5,8 @@ import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
+import java.util.Objects;
+
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glClear;
@@ -57,7 +59,7 @@ public class Window {
         glfwFreeCallbacks(glfwWindow);
         glfwDestroyWindow(glfwWindow);
         glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 
     public void init() {
@@ -72,7 +74,7 @@ public class Window {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 
         // Create window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);

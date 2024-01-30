@@ -39,3 +39,8 @@ Generate VAO, VBO, EBO, note offsets are in bytes rather than #s away. You'll ha
 IntBuffer respectively using BufferUtils's functionality. \
 During the Update steps, you'll have create and bind program and VAO via `glUseProgram(), glBindVertexArray(), glEnableVertexAttribArray()`, then you can 
 draw the elements. After all is done, you'll have to deconstruct everything which is same thing set to `0 (nullptr)`, and disabling the Attribute.
+
+### Regex and Shader Abstraction
+Either you can have one file determining Shaders. Or like what LearnOpenGL.com
+states you can just have multiple files for specific Shaders. In this case, we're abstracting it via 
+Regex, separating and figuring the starting and the End of the specific Shader program.

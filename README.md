@@ -54,4 +54,8 @@ With Camera we have a Far and Near clipping, just not render when we're not want
 ![img.png](assets/imageREADME/cameraType.png)
 
 ### Shader
+![img.png](assets/imageREADME/glslShader.png)
+With the predefined VAO, we will have to match VAO and the layout location type, for example
+vec3 represents a vector that contains 3 floats, meaning first 3 item in must be for layout(0).
+
 
